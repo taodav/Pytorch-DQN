@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from utils.helpers import process_state
+from utils.helpers import process_state, device
 
 def make_epsilon_greedy_policy(estimator, nA):
     """
@@ -16,9 +16,10 @@ def make_epsilon_greedy_policy(estimator, nA):
         :param epsilon:
         :return: action probabilities, of size b x nA
         """
-        A = torch.ones((state.size(0), nA)) * epsilon / nA
+        A = torch.ones(nA) * epsilon / nA
+        state = torch.from_numpy(state).float().to(device).unsqueeze(0) / 255.0
         q_vals = estimator.forward(state)
-        best_action = torch.argmax(q_vals, dim=1).unsqueeze(-1)  # b
-        A[:, best_action] += (1.0 - epsilon)
+        best_action = torch.argmax(q_vals, dim=0).unsqueeze(-1)  # b
+        A[best_action] += (1.0 - epsilon)
         return A
     return policy_fn

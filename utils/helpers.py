@@ -9,10 +9,10 @@ def process_state(state):
     state: should be 210 x 160 x 3 shaped np.array
     output: 1x84x84 image
     """
-    cropped = Image.fromarray(state).crop((0, 34, 160, 160 + 34))
+    cropped = Image.fromarray(state)\
+        .crop((0, 34, 160, 160 + 34))
     composite = transforms.Compose([
-        transforms.Grayscale(),
-        transforms.Resize((84, 84)),
+        transforms.Resize((96, 96)),
         transforms.ToTensor()
     ])
     return composite(cropped).to(device)

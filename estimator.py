@@ -23,7 +23,7 @@ class Estimator(nn.Module):
         self.conv3 = nn.Conv2d(64, 64, 3, stride=1)
         self.r3 = nn.ReLU()
 
-        self.dense = torch.nn.Linear(64 * 7 * 7, 512)
+        self.dense = torch.nn.Linear(64 * 8 * 8, 512)
         self.r4 = nn.ReLU()
         self.out = torch.nn.Linear(512, len(valid_actions))
 

@@ -17,7 +17,7 @@ def train(env, estimator, target_network, num_episodes=1000,
                     replay_memory_size=500000,
                     frame_history_len=4,
                     save_every=10,
-                    update_every=4000,
+                    update_every=1000,
                     discount=0.99, epsilon_start=1.0,
                     epsilon_end=0.1,
                     epsilon_decay_steps=50000,
@@ -60,7 +60,7 @@ def train(env, estimator, target_network, num_episodes=1000,
     for ep in pbar:
 
         state = env.reset()  # 210 x 160 x 4
-        state = process_state(state)  # 3 x 160 x 160
+        state = process_state(state)  # 94 x 94 x 3
         episode_loss = 0
         episode_reward = 0
         episode_t = 0
@@ -84,14 +84,13 @@ def train(env, estimator, target_network, num_episodes=1000,
             replay_memory.store_effect(last_idx, action, reward, done)
             next_state = process_state(next_state)
 
-
             state = next_state
 
             if replay_memory.can_sample(batch_size):
                 obs_batch, act_batch, rew_batch, next_obs_batch, done_mask = replay_memory.sample(batch_size)
-
-                obs_batch = torch.from_numpy(obs_batch).float().to(device) / 255.0
-                act_batch = torch.from_numpy(act_batch).long().to(device)
+                obs_batch = torch.from_numpy(obs_batch).float()
+                obs_batch = obs_batch.to(device)
+                act_batch = torch.from_numpy(act_batch).long().to(device) / 255.0
                 rew_batch = torch.from_numpy(rew_batch).to(device)
                 next_obs_batch = torch.from_numpy(next_obs_batch).float().to(device) / 255.0
                 not_done_mask = torch.from_numpy(1 - done_mask).float().to(device)

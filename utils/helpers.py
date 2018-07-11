@@ -1,4 +1,5 @@
 from PIL import Image
+import numpy as np
 from torchvision import transforms
 import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -12,10 +13,13 @@ def process_state(state):
     cropped = Image.fromarray(state)\
         .crop((0, 34, 160, 160 + 34))
     composite = transforms.Compose([
-        transforms.Resize((96, 96)),
-        transforms.ToTensor()
+        transforms.Grayscale(),
+        transforms.Resize((96, 96))
     ])
-    return composite(cropped).to(device)
+    image = composite(cropped)
+    small_img = np.uint8(image)
+    return np.expand_dims(small_img, 0)
+
 
 def copy_model_params(model1, model2):
     """

@@ -8,12 +8,14 @@ from estimator import Estimator
 num_episodes = 1000
 frame_history_len = 4
 
-env = gym.envs.make("Breakout-v0")
+# env = gym.envs.make("Breakout-v0")
+env = gym.envs.make("BreakoutDeterministic-v4")
 if len(env.observation_space.shape) == 1:
     # This means we are running on low-dimensional observations (e.g. RAM)
     input_arg = env.observation_space.shape[0]
 else:
     img_h, img_w, img_c = env.observation_space.shape
+    img_c = 1  # FOR GRAYSCALE TRAINING
     input_arg = frame_history_len * img_c
 
 num_actions = env.action_space.n

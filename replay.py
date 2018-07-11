@@ -101,9 +101,11 @@ class ReplayBuffer(object):
         if start_idx < 0 and self.num_in_buffer != self.size:
             start_idx = 0
 
-        for idx in range(start_idx, end_idx - 1):
-            if self.done[idx % self.size]:
-                start_idx = idx + 1
+        # for idx in range(start_idx, end_idx - 1):
+        #     if self.done[idx % self.size]:
+        #         print("before", start_idx, end_idx)
+        #         start_idx = idx + 1
+        #         print("after", start_idx, end_idx)
 
         missing_context = self.frame_history_len - (end_idx - start_idx)
 
@@ -135,7 +137,6 @@ class ReplayBuffer(object):
         res = self.next_idx
         self.next_idx = (self.next_idx + 1) % self.size
         self.num_in_buffer = min(self.size, self.num_in_buffer + 1)
-
         return res
 
     def store_effect(self, idx, action, reward, done):
